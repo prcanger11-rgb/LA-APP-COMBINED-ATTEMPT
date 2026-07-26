@@ -257,6 +257,7 @@ function buildGrowth() {
 function buildExplore() {
   exploreViewer = userType;
 
+  // Build viewer dropdown
   var sel = document.getElementById('viewer-select');
   sel.innerHTML = '';
   TYPES.forEach(function(t) {
@@ -267,6 +268,7 @@ function buildExplore() {
     sel.appendChild(opt);
   });
 
+  // Build target type grid
   var g = document.getElementById('ex-type-grid');
   g.innerHTML = '';
   TYPES.forEach(function(t) {
@@ -286,6 +288,7 @@ function buildExplore() {
 
 function onViewerChange(val) {
   exploreViewer = val;
+  // Re-render detail if a target is already selected
   var selTarget = document.querySelector('#ex-type-grid .ex-btn.sel');
   if (selTarget) loadExploreDetail(selTarget.textContent);
 }
@@ -295,12 +298,11 @@ function loadExploreDetail(type) {
   var viewer = exploreViewer || userType;
   var cacheKey = viewer + '-' + type;
   var d = EXPLORE_PAIRS[cacheKey] || EXPLORE_PAIRS[type+'-'+viewer] || {};
+  var isSelf = type === viewer;
   var viewerLabel = viewer === userType ? 'your type (' + viewer + ')' : viewer;
 
   if (!d.overview) {
-    det.innerHTML = '<div class="card"><div class="c-lbl" style="margin-bottom:2px">' + type + ' - overview</div>' +
-      '<p style="font-size:14px;color:var(--text);line-height:1.75">' + (TYPE_DESC[type] || '') + '</p>' +
-      '<p style="font-size:12px;color:var(--text3);margin-top:10px">This specific pair (' + viewer + ' \u2192 ' + type + ') has not been written yet - see the note at the top of data.js.</p></div>';
+    det.innerHTML = '<div class="card"><p style="color:var(--text2);font-size:14px">This pair hasn\'t been updated yet.</p></div>';
     return;
   }
 
@@ -312,15 +314,17 @@ function loadExploreDetail(type) {
     '<div style="background:var(--amber-l);border-radius:var(--rs);padding:12px"><div class="fn-sec-lbl" style="margin-bottom:5px">Blind spots</div><p style="font-size:13px;line-height:1.6">' + (d.shadow || '') + '</p></div>' +
     '</div></div>';
 
-  html += '<div class="card"><div class="c-lbl">' + viewer + ' + ' + type + ' dynamic</div>' +
-    '<p style="font-size:14px;line-height:1.75;margin-bottom:14px">' + (d.dynamic || '') + '</p>' +
-    '<div style="background:var(--purple-l);border-radius:var(--rs);padding:14px;margin-bottom:10px">' +
-    '<div class="fn-sec-lbl" style="margin-bottom:6px">How to work with them</div>' +
-    '<p style="font-size:13px;color:#2D2580;line-height:1.7">' + (d.working || '') + '</p></div>' +
-    '<div style="background:var(--red-l);border-radius:var(--rs);padding:14px">' +
-    '<div class="fn-sec-lbl" style="margin-bottom:6px">Where friction happens</div>' +
-    '<p style="font-size:13px;color:var(--red);line-height:1.7">' + (d.friction || '') + '</p></div></div>';
-
+    html += '<div class="card"><div class="c-lbl">' + viewer + ' + ' + type + ' dynamic</div>' +
+      '<p style="font-size:14px;line-height:1.75;margin-bottom:14px">' + (d.dynamic || '') + '</p>' +
+      '<div style="background:var(--purple-l);border-radius:var(--rs);padding:14px;margin-bottom:10px">' +
+      '<div class="fn-sec-lbl" style="margin-bottom:6px">How to work with them</div>' +
+      '<p style="font-size:13px;color:#2D2580;line-height:1.7">' + (d.working || '') + '</p></div>' +
+      '<div style="background:var(--red-l);border-radius:var(--rs);padding:14px">' +
+      '<div class="fn-sec-lbl" style="margin-bottom:6px">Where friction happens</div>' +
+      '<p style="font-size:13px;color:var(--red);line-height:1.7">' + (d.friction || '') + '</p></div></div>';
+    
+console.log(d);
+console.log(html);
   det.innerHTML = html;
 }
 
