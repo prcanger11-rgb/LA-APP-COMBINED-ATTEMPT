@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindStack</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+
+<!-- ONBOARD -->
+<div id="p-onboard" class="page active">
+  <div class="ob-logo serif">MindStack</div>
+  <p class="ob-sub">A journal that reads your cognitive patterns, not just your words.</p>
+  <div class="ob-lbl">Your MBTI type</div>
+  <div class="mode-row">
+    <button class="mode-btn active" id="m-know" onclick="setMode('know')">I know my type</button>
+    <button class="mode-btn" id="m-unsure" onclick="setMode('unsure')">Not sure / finding out</button>
+  </div>
+  <div id="sec-know">
+    <div class="type-grid" id="tg-know"></div>
+    <p class="hint">Tap to select</p>
+    <button class="btn-p" id="btn-start" disabled onclick="startApp()">Start journaling</button>
+    <button class="btn-g" onclick="setMode('unsure')">Not sure? Find your type</button>
+  </div>
+  <div id="sec-unsure" style="display:none">
+    <p style="font-size:14px;color:var(--text2);margin-bottom:18px;line-height:1.6">Select all the types that sound like you. We will narrow it down.</p>
+    <div class="type-grid" id="tg-multi"></div>
+    <p class="hint" id="multi-hint">Select one or more</p>
+    <button class="btn-p" id="btn-quiz" disabled onclick="startQuiz()">Find my type</button>
+    <button class="btn-g" onclick="setMode('know')">I know my type</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="p-quiz" class="page">
+  <div class="quiz-prog" id="quiz-prog"></div>
+  <div class="quiz-q serif" id="quiz-q"></div>
+  <p class="quiz-sub" id="quiz-sub"></p>
+  <div class="quiz-opts" id="quiz-opts"></div>
+  <button class="btn-g" onclick="showPage('p-onboard')">Back</button>
+</div>
+
+<!-- RESULT -->
+<div id="p-result" class="page">
+  <div style="text-align:center;padding:16px 0 24px">
+    <div style="font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px">Your likely type</div>
+    <div class="result-type serif" id="res-type"></div>
+    <p style="font-size:14px;color:var(--text2);line-height:1.6;max-width:300px;margin:0 auto" id="res-desc"></p>
+  </div>
+  <div class="card" id="res-stack"></div>
+  <button class="btn-p" onclick="startApp()">This is me - start journaling</button>
+  <button class="btn-g" onclick="showPage('p-onboard')">Try again</button>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none">
+
+  <!-- JOURNAL -->
+  <div id="tab-journal" class="page">
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num" id="s-streak">0</div><div class="stat-lbl">day streak</div></div>
+      <div class="stat"><div class="stat-num" id="s-entries">0</div><div class="stat-lbl">entries</div></div>
+      <div class="stat"><div class="stat-num" id="s-type">--</div><div class="stat-lbl">your type</div></div>
+    </div>
+    <div class="card">
+      <div class="c-lbl">This week</div>
+      <div class="streak-row" id="streak-row"></div>
+    </div>
+    <div class="card">
+      <div class="j-mode-row">
+        <button class="j-mode-btn active" id="jm-write" onclick="setJMode('write')">Free write</button>
+        <button class="j-mode-btn" id="jm-scenario" onclick="setJMode('scenario')">Walk me through it</button>
+      </div>
+      <div id="jv-write">
+        <textarea id="entry-input" placeholder="Write anything - what is on your mind, something that felt off, a situation you are turning over..."></textarea>
+        <div class="toggle-row">
+          <label class="tog"><input type="checkbox" id="excl-tog"><span class="t-sl"></span></label>
+          <span class="tog-lbl">Exclude from AI - keep this private</span>
+        </div>
+        <button class="btn-p" style="margin-top:12px" id="btn-submit" onclick="submitFreeWrite()">Get insight</button>
+      </div>
+      <div id="jv-scenario" style="display:none">
+        <div class="sc-step">
+          <div class="sc-num">Step 1 - What happened</div>
+          <div class="sc-q">Describe the situation plainly. Do not interpret it yet - just what occurred.</div>
+          <textarea class="sc-input" id="sc-1" placeholder="e.g. I had a conversation and it went differently than I expected..."></textarea>
+        </div>
+        <div class="sc-step">
+          <div class="sc-num">Step 2 - Your reaction</div>
+          <div class="sc-q">What was your immediate internal response? What did you feel or think first?</div>
+          <textarea class="sc-input" id="sc-2" placeholder="e.g. I felt defensive, I went quiet, I could not stop thinking about it..."></textarea>
+        </div>
+        <div class="sc-step">
+          <div class="sc-num">Step 3 - What you want</div>
+          <div class="sc-q">What outcome are you actually looking for - resolution, clarity, to be heard, to move on?</div>
+          <textarea class="sc-input" id="sc-3" placeholder="e.g. I just want to understand why it bothered me..."></textarea>
+        </div>
+        <div class="toggle-row">
+          <label class="tog"><input type="checkbox" id="excl-tog-sc"><span class="t-sl"></span></label>
+          <span class="tog-lbl">Exclude from AI - keep this private</span>
+        </div>
+        <button class="btn-p" style="margin-top:12px" id="btn-scenario" onclick="submitScenario()">Analyse this situation</button>
+      </div>
+    </div>
+    <div id="insight-out"></div>
+  </div>
+
+  <!-- LEARN -->
+  <div id="tab-learn" class="page" style="display:none">
+    <div class="sec-title serif" id="learn-title"></div>
+    <p class="sec-sub">Understand your wiring and the system underneath all types.</p>
+    <div class="learn-tabs">
+      <button class="l-tab active" onclick="setLearnTab('stack')">Your stack</button>
+      <button class="l-tab" onclick="setLearnTab('glossary')">Functions</button>
+      <button class="l-tab" onclick="setLearnTab('growth')">Growth</button>
+    </div>
+    <div id="lv-stack"></div>
+    <div id="lv-glossary" style="display:none"></div>
+    <div id="lv-growth" style="display:none"></div>
+  </div>
+
+  <!-- EXPLORE -->
+  <div id="tab-explore" class="page" style="display:none">
+    <div class="sec-title serif">Explore types</div>
+    <p class="sec-sub">See any type from any perspective.</p>
+
+    <div class="card" style="margin-bottom:12px">
+      <div class="c-lbl" style="margin-bottom:6px">Viewing as</div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:10px">Switch perspective to see how different types read each other.</p>
+      <div class="viewer-dropdown-wrap">
+        <select class="viewer-select" id="viewer-select" onchange="onViewerChange(this.value)"></select>
+        <div class="viewer-select-arrow">&#9660;</div>
+      </div>
+    </div>
+
+    <div class="c-lbl" style="margin-bottom:8px;padding:0 2px">Viewing</div>
+    <div class="ex-grid" id="ex-type-grid"></div>
+    <div id="ex-detail"></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="tab-history" class="page" style="display:none">
+    <div class="sec-title serif">History</div>
+    <p class="sec-sub">Your month at a glance.</p>
+    <div class="card">
+      <div class="c-lbl" id="month-lbl"></div>
+      <div class="month-grid" id="month-grid"></div>
+      <div class="legend">
+        <span><span class="l-dot" style="background:var(--purple-l);border:.5px solid var(--purple-m)"></span>AI insight</span>
+        <span><span class="l-dot" style="background:var(--green-l);border:.5px solid #7DC4A0"></span>Private</span>
+      </div>
+    </div>
+    <div id="entries-list"></div>
+  </div>
+
+  <!-- PATTERNS -->
+  <div id="tab-dashboard" class="page" style="display:none">
+    <div class="sec-title serif">Patterns</div>
+    <p class="sec-sub">What keeps showing up in your entries.</p>
+    <div class="card" style="margin-bottom:10px">
+      <div class="c-lbl">Themes this month</div>
+      <div id="theme-bars"></div>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div class="c-lbl">Recurring situations</div>
+      <div id="pattern-rows"></div>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div class="c-lbl">Words you return to</div>
+      <div id="word-chips" style="padding-top:4px"></div>
+    </div>
+    <div class="card">
+      <div class="c-lbl">Your type's recurring blind spot</div>
+      <p id="blind-spot" style="font-size:14px;line-height:1.75;color:var(--text)"></p>
+    </div>
+  </div>
+
+  <!-- SIGN OUT -->
+  <div id="tab-signout" class="page" style="display:none">
+    <div style="display:flex;flex-direction:column;align-items:center;padding:48px 0 32px">
+      <div class="ob-logo serif" style="margin-bottom:8px">MindStack</div>
+      <p style="font-size:14px;color:var(--text2);text-align:center;line-height:1.65;max-width:280px;margin-bottom:32px">Switch types, retake the quiz, or explore from a different perspective. Your journal entries stay saved on this device.</p>
+      <div style="background:var(--surface2);border-radius:var(--rs);padding:14px 20px;margin-bottom:28px;text-align:center;width:100%">
+        <div style="font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Current type</div>
+        <div class="serif" id="so-type" style="font-size:40px;color:var(--purple)"></div>
+      </div>
+      <button class="btn-p" onclick="signOut()">Choose a new type</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<nav class="nav" id="main-nav" style="display:none">
+  <button class="nav-item active" onclick="switchTab('journal')"><div class="nav-dot"></div>Journal</button>
+  <button class="nav-item" onclick="switchTab('learn')"><div class="nav-dot"></div>Learn</button>
+  <button class="nav-item" onclick="switchTab('explore')"><div class="nav-dot"></div>Explore</button>
+  <button class="nav-item" onclick="switchTab('history')"><div class="nav-dot"></div>History</button>
+  <button class="nav-item" onclick="switchTab('dashboard')"><div class="nav-dot"></div>Patterns</button>
+  <button class="nav-item" onclick="switchTab('signout')"><div class="nav-dot"></div>Sign out</button>
+</nav>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
