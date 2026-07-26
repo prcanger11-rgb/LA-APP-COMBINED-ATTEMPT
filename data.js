@@ -2052,22 +2052,22 @@ var EXPLORE_PAIRS = {
 var TYPES = ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'];
 
 var TYPE_DESC = {
-  INFJ: 'Pattern-seeker with quiet depth. Sees beneath surfaces, carries others without being asked, and builds meaning out of everything.',
-  INTJ: 'Strategic and self-directed. Builds toward long-range visions most people cannot see yet, and executes with unusual discipline.',
-  INFP: 'Value-driven and quietly intense. Holds convictions deeply and feels everything - which is both the gift and the weight.',
-  ENFJ: 'Natural connector and visible leader. Reads rooms and people instinctively, and carries their wellbeing as a personal responsibility.',
-  INTP: 'Framework builder. More interested in whether something holds together internally than whether anyone agrees with it.',
-  ENTP: 'Idea generator and challenger. Argues to think, not to win - though it often looks the same from the outside.',
-  ENTJ: 'Executor and strategist. Builds systems around outcomes and moves fast toward them, often before others have formed a plan.',
-  ENFP: 'Possibility-driven and genuinely warm. Finds meaning in people and ideas at speed - finishing things is the harder part.',
-  ISTJ: 'Systematic and reliable. Builds carefully on what is proven and holds things together when others lose the thread.',
-  ISFJ: 'Quietly devoted. Shows up for people in practical, specific ways that often go unnoticed and unasked-for.',
-  ESTJ: 'Organized and direct. Brings structure to chaos and holds people accountable without treating it as personal.',
-  ESFJ: 'Warm and socially attuned. Feels responsible for the people around them and acts on it constantly.',
-  ISTP: 'Efficient and observant. Solves what is in front of them with precision and minimal noise.',
-  ISFP: 'Understated and deeply feeling. Expresses through action and presence more than words.',
-  ESTP: 'Fast and action-oriented. Reads situations quickly and moves before others have finished their analysis.',
-  ESFP: 'Present and energetic. Brings life into rooms and makes people feel genuinely seen.'
+  INFJ: 'A quiet pattern-seeker who sees beneath the surface of things. Carries other people\'s weight without being asked, and turns everything — conversations, coincidences, small moments — into meaning.',
+  INTJ: 'Strategic and self-directed, with a vision for where things should go long before anyone else can see it. Executes on that vision with a discipline most people find hard to sustain.',
+  INFP: 'Quietly intense and driven by values held deep down. Feels everything fully — which is both the gift and the cost.',
+  ENFJ: 'A natural connector who leads out loud. Reads rooms and people instinctively, and treats their wellbeing like a personal responsibility.',
+  INTP: 'A framework builder, more interested in whether an idea holds together than whether anyone agrees with it.',
+  ENTP: 'An idea generator who argues to think, not to win — even when it looks the same from the outside.',
+  ENTJ: 'A born executor and strategist. Builds systems around outcomes and moves fast toward them, often before anyone else has a plan.',
+  ENFP: 'Possibility-driven and genuinely warm, finding meaning in people and ideas at speed — finishing things is the harder part.',
+  ISTJ: 'Systematic and reliable. Builds carefully on what\'s proven, and holds things together when everyone else loses the thread.',
+  ISFJ: 'Quietly devoted, showing up for people in practical, specific ways that often go unnoticed and unasked-for.',
+  ESTJ: 'Organized and direct. Brings structure to chaos and holds people accountable without making it personal.',
+  ESFJ: 'Warm and socially attuned, feeling responsible for the people around them and acting on it constantly.',
+  ISTP: 'Efficient and observant, solving what\'s in front of them with precision and minimal noise.',
+  ISFP: 'Understated and deeply feeling, expressing more through action and presence than through words.',
+  ESTP: 'Fast and action-oriented. Reads situations quickly and moves before anyone else has finished analyzing.',
+  ESFP: 'Present and energetic, bringing life into rooms and making people feel genuinely seen.'
 };
 
 var BLIND_SPOTS = {
