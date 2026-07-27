@@ -2071,21 +2071,21 @@ var TYPE_DESC = {
 };
 
 var BLIND_SPOTS = {
-  INFJ: 'Your Ni builds such a complete internal model that you sometimes stop taking in contradicting data. You are certain not because you have checked, but because the model feels whole.',
-  INTJ: 'You execute brilliantly but occasionally in the wrong direction. Ni locks the target, Te builds the route, and neither function is designed to question whether the destination was right.',
-  INFP: 'You mistake intensity of feeling for correctness of judgment. A value held deeply is not the same as a value that is right in context.',
-  ENFJ: 'You carry emotional responsibility for people who did not ask you to. The help is real but the motive is sometimes about your own discomfort with their situation.',
-  INTP: 'Your models are internally consistent but occasionally disconnected from how things actually work. Elegance of framework does not equal accuracy.',
-  ENTP: 'You can argue any side with equal conviction. This makes it genuinely difficult to know what you actually believe versus what you are currently performing.',
-  ENTJ: 'You treat human problems like logistics problems. People are not inefficiencies to be optimized.',
-  ENFP: 'Idea generation is your native language but it doubles as avoidance. The moment a thing gets hard, a new idea appears that is easier.',
-  ISTJ: 'You trust precedent over evidence. A past method that worked gets grandfathered in long after the context has changed.',
-  ISFJ: 'You say yes to avoid the discomfort of someone else disappointing, not because you have capacity. The resentment accumulates quietly.',
-  ESTJ: 'You confuse authority with correctness. The rule exists, therefore it applies - even when it does not.',
-  ESFJ: 'You read harmony in the room as truth. If people seem okay, you assume things are okay, even when they are not.',
-  ISTP: 'You solve the technical problem and consider the conversation done. The relational layer often remains entirely unaddressed.',
-  ISFP: 'You withdraw from conflict so cleanly that people do not realize there is a problem until you are already gone.',
-  ESTP: 'You optimize for the present read and underweight what happens downstream. The bold move works until it does not.',
+  INFJ: 'Your Ni builds such a complete internal model that you stop noticing when new information contradicts it. The certainty isn\'t earned by checking — it\'s just what a model that feels whole produces.',
+  INTJ: 'You execute brilliantly, sometimes in the wrong direction. Ni locks the target and Te builds the route, but neither function stops to ask whether the target was right in the first place.',
+  INFP: 'You mistake the intensity of a feeling for the correctness of a judgment. Holding a value deeply doesn\'t mean it\'s the right call in this particular context.',
+  ENFJ: 'You take on emotional responsibility for people who never asked you to. The help is real, but the motive is sometimes less about them and more about your own discomfort with their situation.',
+  INTP: 'Your models are internally consistent but occasionally disconnected from how things actually work. Elegance of framework doesn\'t guarantee accuracy.',
+  ENTP: 'You can argue any side with equal conviction, which makes it genuinely hard to know what you actually believe versus what you\'re just performing in the moment.',
+  ENTJ: 'You treat human problems like logistics problems, but people aren\'t inefficiencies waiting to be optimized.',
+  ENFP: 'Idea generation is your native language, but it doubles as avoidance — the moment something gets hard, a new idea shows up that\'s easier.',
+  ISTJ: 'You trust precedent over evidence. A method that worked in the past gets grandfathered in long after the context around it has changed.',
+  ISFJ: 'You say yes to avoid the discomfort of disappointing someone, not because you actually have the capacity. The resentment builds quietly underneath.',
+  ESTJ: 'You confuse authority with correctness — the rule exists, therefore it applies, even when it doesn\'t fit the situation.',
+  ESFJ: 'You read harmony in the room as truth. If people seem okay, you assume things are okay, even when they\'re not.',
+  ISTP: 'You solve the technical problem and consider the conversation done, while the relational layer often goes entirely unaddressed.',
+  ISFP: 'You withdraw from conflict so cleanly that people don\'t realize there\'s a problem until you\'re already gone.',
+  ESTP: 'You optimize for the present read and underweight what happens downstream — the bold move works, until it doesn\'t.',
   ESFP: 'The performance of engagement replaces the thing itself. Saying something feels like doing it.'
 };
 
