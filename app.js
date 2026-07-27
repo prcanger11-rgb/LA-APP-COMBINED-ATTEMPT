@@ -257,7 +257,6 @@ function buildGrowth() {
 function buildExplore() {
   exploreViewer = userType;
 
-  // Build viewer dropdown
   var sel = document.getElementById('viewer-select');
   sel.innerHTML = '';
   TYPES.forEach(function(t) {
@@ -268,7 +267,6 @@ function buildExplore() {
     sel.appendChild(opt);
   });
 
-  // Build target type grid
   var g = document.getElementById('ex-type-grid');
   g.innerHTML = '';
   TYPES.forEach(function(t) {
@@ -288,7 +286,6 @@ function buildExplore() {
 
 function onViewerChange(val) {
   exploreViewer = val;
-  // Re-render detail if a target is already selected
   var selTarget = document.querySelector('#ex-type-grid .ex-btn.sel');
   if (selTarget) loadExploreDetail(selTarget.textContent);
 }
@@ -298,11 +295,12 @@ function loadExploreDetail(type) {
   var viewer = exploreViewer || userType;
   var cacheKey = viewer + '-' + type;
   var d = EXPLORE_PAIRS[cacheKey] || EXPLORE_PAIRS[type+'-'+viewer] || {};
-  var isSelf = type === viewer;
   var viewerLabel = viewer === userType ? 'your type (' + viewer + ')' : viewer;
 
   if (!d.overview) {
-    det.innerHTML = '<div class="card"><p style="color:var(--text2);font-size:14px">This pair hasn\'t been updated yet.</p></div>';
+    det.innerHTML = '<div class="card"><div class="c-lbl" style="margin-bottom:2px">' + type + ' - overview</div>' +
+      '<p style="font-size:14px;color:var(--text);line-height:1.75">' + (TYPE_DESC[type] || '') + '</p>' +
+      '<p style="font-size:12px;color:var(--text3);margin-top:10px">This specific pair (' + viewer + ' \u2192 ' + type + ') has not been written yet - see the note at the top of data.js.</p></div>';
     return;
   }
 
@@ -314,17 +312,15 @@ function loadExploreDetail(type) {
     '<div style="background:var(--amber-l);border-radius:var(--rs);padding:12px"><div class="fn-sec-lbl" style="margin-bottom:5px">Blind spots</div><p style="font-size:13px;line-height:1.6">' + (d.shadow || '') + '</p></div>' +
     '</div></div>';
 
-    html += '<div class="card"><div class="c-lbl">' + viewer + ' + ' + type + ' dynamic</div>' +
-      '<p style="font-size:14px;line-height:1.75;margin-bottom:14px">' + (d.dynamic || '') + '</p>' +
-      '<div style="background:var(--purple-l);border-radius:var(--rs);padding:14px;margin-bottom:10px">' +
-      '<div class="fn-sec-lbl" style="margin-bottom:6px">How to work with them</div>' +
-      '<p style="font-size:13px;color:#2D2580;line-height:1.7">' + (d.working || '') + '</p></div>' +
-      '<div style="background:var(--red-l);border-radius:var(--rs);padding:14px">' +
-      '<div class="fn-sec-lbl" style="margin-bottom:6px">Where friction happens</div>' +
-      '<p style="font-size:13px;color:var(--red);line-height:1.7">' + (d.friction || '') + '</p></div></div>';
-    
-console.log(d);
-console.log(html);
+  html += '<div class="card"><div class="c-lbl">' + viewer + ' + ' + type + ' dynamic</div>' +
+    '<p style="font-size:14px;line-height:1.75;margin-bottom:14px">' + (d.dynamic || '') + '</p>' +
+    '<div style="background:var(--purple-l);border-radius:var(--rs);padding:14px;margin-bottom:10px">' +
+    '<div class="fn-sec-lbl" style="margin-bottom:6px">How to work with them</div>' +
+    '<p style="font-size:13px;color:#2D2580;line-height:1.7">' + (d.working || '') + '</p></div>' +
+    '<div style="background:var(--red-l);border-radius:var(--rs);padding:14px">' +
+    '<div class="fn-sec-lbl" style="margin-bottom:6px">Where friction happens</div>' +
+    '<p style="font-size:13px;color:var(--red);line-height:1.7">' + (d.friction || '') + '</p></div></div>';
+
   det.innerHTML = html;
 }
 
@@ -576,6 +572,7 @@ function buildDashboard() {
     themeEl.innerHTML = '<p class="empty-note">Add a few entries and themes will start to show up here.</p>';
     patEl.innerHTML = '<p class="empty-note">Recurring situations appear once you have logged more than a couple of entries.</p>';
     wordEl.innerHTML = '<p class="empty-note">No words yet - your journal is empty.</p>';
+    document.getElementById('people-list').innerHTML = '<p class="empty-note">No entries yet - people you mention will show up here.</p>';
     return;
   }
 
@@ -620,6 +617,127 @@ function buildDashboard() {
   wordEl.innerHTML = top.length
     ? top.map(function(w){ return '<span class="chip">' + escapeHTML(w) + '</span>'; }).join('')
     : '<p class="empty-note">Write a bit more and recurring words will show up here.</p>';
+
+  buildPeopleSection();
+}
+
+// ─── TYPES IN YOUR LIFE ────────────────────────────────────────────────────────
+var LS_PEOPLE_TYPES = 'mindstack_people_types';
+var NAME_STOP = ['The','This','That','These','Those','When','After','Before','Today','Yesterday','Tomorrow',
+  'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday',
+  'January','February','March','April','May','June','July','August','September','October','November','December',
+  'MindStack','MBTI'];
+
+function getPeopleTypeOverrides() {
+  try { return JSON.parse(localStorage.getItem(LS_PEOPLE_TYPES) || '{}'); } catch (e) { return {}; }
+}
+function safeId(name) { return name.replace(/[^a-zA-Z0-9]/g, ''); }
+
+// Pulls recurring capitalized names out of entry text, and - if a type code
+// (e.g. "INFJ") shows up in the same entry - tallies it as a vote for that
+// person's type. Heuristic, not perfect: it's a starting point you can
+// correct by hand with the dropdown, which is saved and takes priority.
+function extractPeople() {
+  var counts = {}, typeVotes = {};
+  entries.forEach(function(e) {
+    var text = e.text || '';
+    var found = text.match(/\b[A-Z][a-z]{2,}\b/g) || [];
+    var uniqueInEntry = {};
+    found.forEach(function(n) {
+      if (NAME_STOP.indexOf(n) !== -1) return;
+      if (TYPES.indexOf(n.toUpperCase()) !== -1) return;
+      uniqueInEntry[n] = true;
+    });
+    var typeMatch = text.match(/\b(INFJ|INTJ|INFP|ENFJ|INTP|ENTP|ENTJ|ENFP|ISTJ|ISFJ|ESTJ|ESFJ|ISTP|ISFP|ESTP|ESFP)\b/);
+    Object.keys(uniqueInEntry).forEach(function(n) {
+      counts[n] = (counts[n] || 0) + 1;
+      if (typeMatch) {
+        typeVotes[n] = typeVotes[n] || {};
+        typeVotes[n][typeMatch[1]] = (typeVotes[n][typeMatch[1]] || 0) + 1;
+      }
+    });
+  });
+  var names = Object.keys(counts)
+    .filter(function(n) { return counts[n] >= 2; })
+    .sort(function(a, b) { return counts[b] - counts[a]; })
+    .slice(0, 6);
+  var overrides = getPeopleTypeOverrides();
+  return names.map(function(n) {
+    var detected = null;
+    if (typeVotes[n]) {
+      detected = Object.keys(typeVotes[n]).sort(function(a, b) { return typeVotes[n][b] - typeVotes[n][a]; })[0];
+    }
+    return { name: n, count: counts[n], detectedType: detected, savedType: overrides[n] || null };
+  });
+}
+
+function buildPeopleSection() {
+  var wrap = document.getElementById('people-list');
+  var people = extractPeople();
+  if (!people.length) {
+    wrap.innerHTML = '<p class="empty-note">No recurring names yet - mention someone by name a couple of times and they will show up here.</p>';
+    return;
+  }
+  wrap.innerHTML = '';
+  people.forEach(function(p) {
+    var effType = p.savedType || p.detectedType || '';
+    var opts = '<option value="">Type unknown</option>' + TYPES.map(function(t) {
+      return '<option value="' + t + '"' + (t === effType ? ' selected' : '') + '>' + t + '</option>';
+    }).join('');
+    var card = document.createElement('div');
+    card.className = 'person-card';
+    card.innerHTML =
+      '<div class="person-top">' +
+        '<div><div class="person-name">' + escapeHTML(p.name) + '</div>' +
+        '<div class="person-meta">mentioned in ' + p.count + ' entries' + (p.detectedType && !p.savedType ? ' \u00b7 detected ' + p.detectedType : '') + '</div></div>' +
+        '<select class="person-type-select" data-name="' + escapeHTML(p.name) + '">' + opts + '</select>' +
+      '</div>' +
+      '<button class="btn-mini" data-name="' + escapeHTML(p.name) + '">Get insight</button>' +
+      '<div class="person-insight" id="pi-' + safeId(p.name) + '" style="display:none"></div>';
+    wrap.appendChild(card);
+  });
+  wrap.querySelectorAll('.person-type-select').forEach(function(sel) {
+    sel.onchange = function() {
+      var overrides = getPeopleTypeOverrides();
+      if (sel.value) overrides[sel.dataset.name] = sel.value; else delete overrides[sel.dataset.name];
+      localStorage.setItem(LS_PEOPLE_TYPES, JSON.stringify(overrides));
+    };
+  });
+  wrap.querySelectorAll('.btn-mini').forEach(function(btn) {
+    btn.onclick = function() { getPersonInsight(btn.dataset.name, btn); };
+  });
+}
+
+async function getPersonInsight(name, btn) {
+  var box = document.getElementById('pi-' + safeId(name));
+  box.style.display = 'block';
+  var nameRe = new RegExp('\\b' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b');
+  var matching = entries.filter(function(e) { return !e.private && nameRe.test(e.text); });
+  if (!matching.length) {
+    box.innerHTML = 'All entries mentioning ' + escapeHTML(name) + ' are marked private - nothing to send for analysis.';
+    return;
+  }
+  var overrides = getPeopleTypeOverrides();
+  var theirType = overrides[name] || null;
+  btn.disabled = true;
+  box.innerHTML = '<div class="loader"><span></span><span></span><span></span></div>';
+
+  var excerpts = matching.slice(0, 8).map(function(e) { return '- ' + e.text; }).join('\n');
+  var stack = getStack();
+  var sys = 'You are a perceptive relationship-pattern reader with deep knowledge of MBTI cognitive functions. ' +
+    'The journal author is type ' + userType + ' (' + stack.fns.join('-') + '). ' +
+    (theirType
+      ? ('The person being discussed, ' + name + ', is type ' + theirType + '. ')
+      : ('The type of ' + name + ' is not known - do not guess or assume one. ')) +
+    'Below are journal excerpts mentioning ' + name + '. Based ONLY on what is actually described, write a short read ' +
+    '(4-6 sentences) covering: how the author generally interacts with this person, one specific thing that seems to ' +
+    'connect well between them, and one specific thing that could be strengthened. ' +
+    (theirType ? 'You may draw on how ' + userType + ' and ' + theirType + ' typically relate, but ground every claim in the excerpts, not in generic type-pairing tropes. ' : '') +
+    'Do not invent details not present in the excerpts. If the excerpts are too thin to say much, say so plainly instead of padding.';
+
+  var insight = await callInsightAPI(sys, excerpts);
+  btn.disabled = false;
+  box.innerHTML = insight ? escapeHTML(insight) : 'Could not reach the insight service just now - try again in a moment.';
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
