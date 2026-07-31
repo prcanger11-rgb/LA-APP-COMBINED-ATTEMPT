@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="style.css">
+
 :root{--bg:#F7F5F0;--surface:#FFF;--surface2:#F0EDE6;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.14);--text:#1A1814;--text2:#6B6760;--text3:#9B9890;--purple:#5B4FD4;--purple-l:#EAE8FA;--purple-m:#9B94E8;--green:#2D7A4F;--green-l:#E8F5EE;--amber:#B85C0A;--amber-l:#FDF0E6;--blue:#1A5FA8;--blue-l:#E6F0FA;--red:#C13030;--red-l:#FAE8E8;--r:12px;--rs:8px;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
