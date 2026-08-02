@@ -16,9 +16,9 @@
 (function () {
   var FORMSPREE_ENDPOINT = 'https://formspree.io/f/xeeybvvn';
   var MILESTONES = [
-    { minutes: 0.2,  key: 'fb_5',  prompt: 'Quick gut check - what\'s your first impression?' },
-    { minutes: 0.6, key: 'fb_20', prompt: 'You\'ve been at this a bit. Anything confusing, missing, or annoying so far?' },
-    { minutes: 1, key: 'fb_60', prompt: 'Last one, promise. What would make you actually keep using this?' }
+    { minutes: 0.2,  key: 'fb_0.2',  prompt: 'Quick gut check - what\'s your first impression?' },
+    { minutes: 0.6, key: 'fb_0.8', prompt: 'You\'ve been at this a bit. Anything confusing, missing, or annoying so far?' },
+    { minutes: 1, key: 'fb_1', prompt: 'Last one, promise. What would make you actually keep using this?' }
   ];
   var IDLE_LIMIT_MS = 60 * 1000; // stop counting "active" after 60s of no interaction
 
